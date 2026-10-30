@@ -1,0 +1,22 @@
+name: jira-key-sim
+on:
+  issues:
+    types: [closed]
+permissions: {}
+jobs:
+  find-key:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: read
+    steps:
+      - name: Find Jira key
+        id: find
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          JIRA_KEY=$(gh issue view ${{ github.event.issue.number }} --comments --repo ${{ github.repository }} | grep 'was created for internal tracking' | grep -oE 'CLOUDP-[0-9]+' | head -1)
+          echo "key=$JIRA_KEY" >> "$GITHUB_OUTPUT"
+      - name: Simulated Jira transition target
+        run: |
+          echo "RESOLVED_JIRA_KEY=[${{ steps.find.outputs.key }}]"
