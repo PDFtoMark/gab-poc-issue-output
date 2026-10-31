@@ -1,0 +1,10 @@
+name: ExprProbeExact
+on:
+  issues:
+    types: [closed]
+jobs:
+  probe:
+    if: ${{ !startsWith(github.actor, 'C4-') }} && ${{ !startsWith(github.actor, 'c4-') }} && github.actor != 'howlbot-integration'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "PROBE RAN actor=$GITHUB_ACTOR"
